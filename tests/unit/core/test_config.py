@@ -69,6 +69,18 @@ class TestInit(testtools.TestCase):
             utils.ConfigError, f.name, config.BanditConfig, f.name
         )
 
+    def test_yaml_not_a_mapping(self):
+        # Empty files and non-mapping roots are rejected with a ConfigError
+        # instead of crashing during validation.
+        for content in ("", "just a string", "- profiles\n- other"):
+            f = self.useFixture(TempFile(content))
+            self.assertRaises(utils.ConfigError, config.BanditConfig, f.name)
+
+    def test_yaml_empty_mapping_is_valid(self):
+        f = self.useFixture(TempFile("{}"))
+        b_config = config.BanditConfig(f.name)
+        self.assertEqual({}, b_config.config)
+
 
 class TestGetOption(testtools.TestCase):
     def setUp(self):

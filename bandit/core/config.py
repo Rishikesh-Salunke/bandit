@@ -66,11 +66,11 @@ class BanditConfig:
                     LOG.error(err)
                     raise utils.ConfigError("Error parsing file.", config_file)
 
-            self.validate(config_file)
-
             # valid config must be a dict
             if not isinstance(self._config, dict):
                 raise utils.ConfigError("Error parsing file.", config_file)
+
+            self.validate(config_file)
 
             self.convert_legacy_config()
 
